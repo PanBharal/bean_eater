@@ -12,7 +12,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 add_executable(bean_eater WIN32
     src/main.cpp
     src/game.h
-    src/game.cpp)
+    src/game.cpp
+    src/game_update.cpp
+)
 
 target_link_libraries(bean_eater SFML::Graphics SFML::Audio)
 
@@ -51,6 +53,6 @@ install(RUNTIME_DEPENDENCY_SET rutime_deps
 install(DIRECTORY assets/ DESTINATION assets)
 
 set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
-set(CPACK_PACKAGE_VERSION "0.0.2")
+set(CPACK_PACKAGE_VERSION "0.0.3beta")
 set(CPACK_GENERATOR "ZIP")
 include(CPack)
