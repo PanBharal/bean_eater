@@ -6,7 +6,7 @@
 #include <filesystem>
 
 template <typename type>
-static type load_asset(std::filesystem::path path)
+static type loadAsset(std::filesystem::path path)
 {
     type file;
     if (!file.loadFromFile(path)) {
@@ -16,7 +16,7 @@ static type load_asset(std::filesystem::path path)
 }
 
 template <typename type>
-static type open_asset(std::filesystem::path path)
+static type openAsset(std::filesystem::path path)
 {
     type file;
     if (!file.openFromFile(path)) {
