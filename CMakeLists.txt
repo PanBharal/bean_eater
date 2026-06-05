@@ -29,7 +29,7 @@ install(RUNTIME_DEPENDENCY_SET rutime_deps
         "api-ms-.*" "ext-ms-.*"
         "advapi32\\.dll"
         "combase\\.dll"
-        "DWrite\\.dll"
+        "dwrite\\.dll"
         "gdi32\\.dll"
         "glu32\\.dll"
         "kernel32\\.dll"
