@@ -61,21 +61,20 @@ Game::Game()
     menu_bgm.setVolume(10);
     menu_bgm.setLooping(true);
 
-    bgm.setVolume(40);
+    bgm.setVolume(50);
     bgm.setLooping(true);
 
-    eat.setVolume(800);
-    hurt.setVolume(800);
-    death.setVolume(1000);
+    eat.setVolume(700);
+    hurt.setVolume(700);
+    death.setVolume(800);
     bean_move.setVolume(800);
 
     pacman.setOrigin(pacman.getGlobalBounds().getCenter());
-    pacman.setPosition({ 540, 360 });
-    pacman.setRotation(sf::degrees(0.f));
+    ghost.setOrigin(ghost.getGlobalBounds().getCenter());
 
     bean.setRadius(15.f);
     std::uniform_real_distribution<float> distX(0.f, 1080.f - 2 * bean.getRadius());
-    std::uniform_real_distribution<float> distY(0.f, 720.f - 2 * bean.getRadius());
+    std::uniform_real_distribution<float> distY(80.f, 720.f - 2 * bean.getRadius());
     bean.setPosition({ distX(rand_gen), distY(rand_gen) });
     bean.setFillColor({ 108, 209, 46 });
     bean.setOutlineThickness(-5.f);
@@ -108,27 +107,33 @@ void Game::initText()
     print_score.setOutlineColor({ 67, 67, 67 });
     print_score.setOutlineThickness(2.f);
 
-    over_title.setString(L"由于你太爱吃墙\n被娇羞的熟石灰\n腐蚀了脑子......");
-    over_title.setCharacterSize(100);
-    over_title.setOrigin(over_title.getGlobalBounds().getCenter());
-    over_title.setPosition({ 540, 230 });
-    over_title.setFillColor(sf::Color::Red);
+    dead_edge.setString(L"由于你太爱吃墙\n被娇羞的熟石灰\n腐蚀了脑子......");
+    dead_edge.setCharacterSize(100);
+    dead_edge.setOrigin(dead_edge.getGlobalBounds().getCenter());
+    dead_edge.setPosition({ 540, 230 });
+    dead_edge.setFillColor(sf::Color::Red);
 
-    over_title_2.setString(L"民以食为天！！\nbro怎么连食物都追不上...");
-    over_title_2.setCharacterSize(80);
-    over_title_2.setOrigin(over_title.getGlobalBounds().getCenter());
-    over_title_2.setPosition({ 600, 330 });
-    over_title_2.setFillColor(sf::Color::Red);
+    dead_hunger.setString(L"民以食为天！！\nbro怎么连食物都追不上...");
+    dead_hunger.setCharacterSize(80);
+    dead_hunger.setOrigin(dead_hunger.getGlobalBounds().getCenter());
+    dead_hunger.setPosition({ 540, 300 });
+    dead_hunger.setFillColor(sf::Color::Red);
 
-    over_score.setString(L"最终得分：" + std::to_wstring(score));
-    over_score.setCharacterSize(50);
-    over_score.setOrigin(over_score.getGlobalBounds().getCenter());
-    over_score.setPosition({ 540, 560 });
-    over_score.setFillColor(sf::Color::White);
-    over_score.setOutlineColor({ 67, 67, 67 });
-    over_score.setOutlineThickness(2.f);
+    dead_ghost.setString(L"见着你幽灵叔叔还不递支烟？");
+    dead_ghost.setCharacterSize(80);
+    dead_ghost.setOrigin(dead_ghost.getGlobalBounds().getCenter());
+    dead_ghost.setPosition({ 540, 300 });
+    dead_ghost.setFillColor(sf::Color::Red);
 
-    over_text.setString(L"<R> 继续  <ESC> 退出");
+    final_score.setString(L"最终得分：" + std::to_wstring(score));
+    final_score.setCharacterSize(50);
+    final_score.setOrigin(final_score.getGlobalBounds().getCenter());
+    final_score.setPosition({ 540, 560 });
+    final_score.setFillColor(sf::Color::White);
+    final_score.setOutlineColor({ 67, 67, 67 });
+    final_score.setOutlineThickness(2.f);
+
+    over_text.setString(L"<N> 菜单  <R> 继续  <ESC> 退出");
     over_text.setCharacterSize(30);
     over_text.setOrigin(over_text.getGlobalBounds().getCenter());
     over_text.setPosition({ 540, 690 });
@@ -163,11 +168,23 @@ void Game::handle_event(const sf::Event::KeyPressed& key)
     } else if (key.code == sf::Keyboard::Key::Space) {
         is_menu = false;
     } else if (key.code == sf::Keyboard::Key::R) {
-        score = 0;
-        hp = 3;
         init_game = false;
         is_over = false;
         init_over = false;
+        score = 0;
+        hp = 5;
+        cause_death = ALIVE;
+        current_level = NORMAL;
+    } else if (key.code == sf::Keyboard::Key::N) {
+        is_menu = true;
+        init_menu = false;
+        init_game = false;
+        is_over = false;
+        init_over = false;
+        score = 0;
+        hp = 5;
+        cause_death = ALIVE;
+        current_level = WAIT;
     }
 }
 
@@ -181,15 +198,20 @@ void Game::render()
         window.clear({ 136, 171, 218 });
         window.draw(bean);
         window.draw(pacman);
+        if (current_level >= HAVE_GHOST) {
+            window.draw(ghost);
+        }
         window.draw(print_score);
         window.draw(print_hp);
     } else if (is_over) {
         window.clear(sf::Color::Black);
-        if (score <= 0)
-            window.draw(over_title_2);
-        else
-            window.draw(over_title);
-        window.draw(over_score);
+        if (cause_death == HUNGER)
+            window.draw(dead_hunger);
+        else if (cause_death == EDGE)
+            window.draw(dead_edge);
+        else if (cause_death == GHOST)
+            window.draw(dead_ghost);
+        window.draw(final_score);
         window.draw(over_text);
     }
     window.display();

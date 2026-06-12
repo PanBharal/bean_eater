@@ -2,9 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include "game.h"
-#include <iostream>
 
 float bean_alive_time = 0;
+float ghost_speed = 400.f;
+sf::Vector2f ghost_incre = { ghost_speed, ghost_speed };
 
 void Game::update()
 {
