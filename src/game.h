@@ -60,7 +60,9 @@ private:
 
     void update();
     void control(float delta_time, float speed = 300.f);
-    bool outEdge(const sf::Sprite& sprite);
+
+    template <typename type>
+    out outEdge(const type& sprite);
 
     void render();
 

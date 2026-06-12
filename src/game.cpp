@@ -27,7 +27,7 @@ static type openAsset(std::filesystem::path path)
 
 Game::Game()
     : window(sf::VideoMode({ 1080, 770 }), L"吃豆人 - 我吃故我在！")
-    , font(openAsset<sf::Font>("assets/song.ttf"))
+    , simsun(openAsset<sf::Font>("assets/song.ttf"))
     , menu_bgm(openAsset<sf::Music>("assets/I eat so I'm here.mp3"))
     , bgm(openAsset<sf::Music>("assets/rifle.mp3"))
     , eat_buffer(loadAsset<sf::SoundBuffer>("assets/eat.ogg"))
@@ -36,14 +36,17 @@ Game::Game()
     , bean_buffer(loadAsset<sf::SoundBuffer>("assets/pong.wav"))
     , init_menu_back(loadAsset<sf::Texture>("assets/menu_back.png"))
     , eater(loadAsset<sf::Texture>("assets/eater.png"))
+    , tex_ghost(loadAsset<sf::Texture>("assets/ghost.png"))
     , pacman(eater)
-    , menu_text(font)
-    , over_title(font)
-    , over_title_2(font)
-    , over_text(font)
-    , print_score(font)
-    , print_hp(font)
-    , over_score(font)
+    , ghost(tex_ghost)
+    , menu_text(simsun)
+    , dead_edge(simsun)
+    , dead_hunger(simsun)
+    , dead_ghost(simsun)
+    , over_text(simsun)
+    , print_score(simsun)
+    , print_hp(simsun)
+    , final_score(simsun)
     , eat(eat_buffer)
     , hurt(hurt_buffer)
     , death(death_buffer)
@@ -84,7 +87,7 @@ void Game::initText()
     menu_text.setString(L"吃个球！");
     menu_text.setCharacterSize(200);
     menu_text.setOrigin(menu_text.getGlobalBounds().getCenter());
-    menu_text.setPosition({ 540, 200 });
+    menu_text.setPosition({ 540, 160 });
     menu_text.setFillColor({ 67, 67, 67 });
     menu_text.setOutlineColor(sf::Color::White);
     menu_text.setOutlineThickness(2.f);
