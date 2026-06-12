@@ -14,6 +14,7 @@ add_executable(bean_eater WIN32
     src/game.h
     src/game.cpp
     src/game_update.cpp
+    src/icon.rc
 )
 
 target_link_libraries(bean_eater SFML::Graphics SFML::Audio)
@@ -26,26 +27,18 @@ install(TARGETS bean_eater
 )
 install(RUNTIME_DEPENDENCY_SET rutime_deps
     PRE_EXCLUDE_REGEXES
-        "api-ms-.*" "ext-ms-.*"
-        "advapi32\\.dll"
+        "api-ms-.*" "advapi32\\.dll"
         "combase\\.dll"
         "dwrite\\.dll"
-        "gdi32\\.dll"
-        "glu32\\.dll"
-        "kernel32\\.dll"
-        "KernelBase\\.dll"
+        "ext-ms-.*"
+        "gdi32\\.dll" "glu32\\.dll"
+        "kernel32\\.dll" "KernelBase\\.dll"
         "ntdll\\.dll"
-        "ole32\\.dll"
-        "opengl32\\.dll"
+        "ole32\\.dll" "opengl32\\.dll"
         "rpcrt4\\.dll"
-        "sechost\\.dll"
-        "shell32\\.dll"
-        "user32\\.dll"
-        "usp10\\.dll"
-        "win32u\\.dll"
-        "winmm\\.dll"
-        "ws2_32\\.dll"
-        # 微软运行时库（系统已有，或应由 vc_redist 提供）
+        "sechost\\.dll" "shell32\\.dll"
+        "user32\\.dll" "usp10\\.dll"
+        "win32u\\.dll" "winmm\\.dll" "ws2_32\\.dll"
         "msvcrt\\.dll" "msvcp.*\\.dll"
     DIRECTORIES "E:/Scoop/apps/msys2/current/clang64/bin"
     RUNTIME DESTINATION .
@@ -53,6 +46,6 @@ install(RUNTIME_DEPENDENCY_SET rutime_deps
 install(DIRECTORY assets/ DESTINATION assets)
 
 set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
-set(CPACK_PACKAGE_VERSION "0.0.3")
+set(CPACK_PACKAGE_VERSION "0.1.0")
 set(CPACK_GENERATOR "ZIP")
 include(CPack)
