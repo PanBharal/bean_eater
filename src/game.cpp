@@ -29,12 +29,13 @@ Game::Game()
     : window(sf::VideoMode({ 1080, 770 }), L"吃豆人 - 我吃故我在！")
     , simsun(openAsset<sf::Font>("assets/song.ttf"))
     , menu_bgm(openAsset<sf::Music>("assets/I eat so I'm here.mp3"))
-    , bgm(openAsset<sf::Music>("assets/rifle.mp3"))
+    , bgm(openAsset<sf::Music>("assets/bean's demise.mp3"))
     , eat_buffer(loadAsset<sf::SoundBuffer>("assets/eat.ogg"))
     , hurt_buffer(loadAsset<sf::SoundBuffer>("assets/hurt.ogg"))
     , death_buffer(loadAsset<sf::SoundBuffer>("assets/death.wav"))
     , bean_buffer(loadAsset<sf::SoundBuffer>("assets/pong.wav"))
     , init_menu_back(loadAsset<sf::Texture>("assets/menu_back.png"))
+    , init_game_back(loadAsset<sf::Texture>("assets/game_back.png"))
     , eater(loadAsset<sf::Texture>("assets/eater.png"))
     , tex_ghost(loadAsset<sf::Texture>("assets/ghost.png"))
     , pacman(eater)
@@ -53,7 +54,7 @@ Game::Game()
     , bean_move(bean_buffer)
     , rand_gen(seed())
 {
-    window.setFramerateLimit(60);
+    window.setFramerateLimit(70);
     window.setKeyRepeatEnabled(false);
 
     initText();
@@ -61,13 +62,13 @@ Game::Game()
     menu_bgm.setVolume(10);
     menu_bgm.setLooping(true);
 
-    bgm.setVolume(50);
+    bgm.setVolume(100);
     bgm.setLooping(true);
 
-    eat.setVolume(700);
-    hurt.setVolume(700);
-    death.setVolume(800);
-    bean_move.setVolume(800);
+    eat.setVolume(500);
+    hurt.setVolume(500);
+    death.setVolume(700);
+    bean_move.setVolume(500);
 
     pacman.setOrigin(pacman.getGlobalBounds().getCenter());
     ghost.setOrigin(ghost.getGlobalBounds().getCenter());
@@ -195,7 +196,8 @@ void Game::render()
         window.draw(menu_back);
         window.draw(menu_text);
     } else if (!is_menu && !is_over) {
-        window.clear({ 136, 171, 218 });
+        window.clear({ 68, 139, 204 });
+        window.draw(game_back);
         window.draw(bean);
         window.draw(pacman);
         if (current_level >= HAVE_GHOST) {

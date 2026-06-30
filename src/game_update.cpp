@@ -4,8 +4,8 @@
 #include "game.h"
 
 float bean_alive_time = 0;
-float ghost_speed = 400.f;
-sf::Vector2f ghost_incre = { ghost_speed, ghost_speed };
+float ghost_speed;
+sf::Vector2f ghost_incre;
 
 void Game::update()
 {
@@ -21,22 +21,29 @@ void Game::update()
     }
 
     if (!is_menu && !is_over) {
-        print_score.setString(L"得分：" + std::to_wstring(score));
-        print_hp.setString("HP: " + std::to_string(hp));
-
         if (!init_game) {
             clock.restart();
             menu_bgm.stop();
             bgm.play();
 
+            game_back.setSize({ 1040, 680 });
+            game_back.setTexture(&init_game_back);
+            game_back.setPosition({ 20, 70 });
+
+            pacman.setColor({ 255, 255, 255, 255 });
             pacman.setPosition({ window.getSize().x / 2.f, 360 });
             pacman.setRotation(sf::degrees(0.f));
             pacman.setScale({ 1.f, 1.f });
             ghost.setPosition({ 100, 500 });
+            ghost_speed = 400.f;
+            ghost_incre = { ghost_speed, ghost_speed };
 
             current_level = NORMAL;
             init_game = true;
         }
+
+        print_score.setString(L"得分：" + std::to_wstring(score));
+        print_hp.setString("HP: " + std::to_string(hp));
 
         float delta_time = clock.restart().asSeconds();
         bean_alive_time += delta_time;
@@ -44,15 +51,15 @@ void Game::update()
 
         if (bean_alive_time >= 2.f) {
             bean_move.play();
-            std::uniform_real_distribution<float> newX(0.f, 1080.f - 2 * bean.getRadius());
-            std::uniform_real_distribution<float> newY(80.f, 720.f - 2 * bean.getRadius());
+            std::uniform_real_distribution<float> newX(20.f, 1060.f - 2 * bean.getRadius());
+            std::uniform_real_distribution<float> newY(70.f, 760.f - 2 * bean.getRadius());
             bean.setPosition({ newX(rand_gen), newY(rand_gen) });
             bean_alive_time = 0;
             score--;
         } else if (pacman.getGlobalBounds().findIntersection(bean.getGlobalBounds())) {
             eat.play();
-            std::uniform_real_distribution<float> newX(0.f, 1080.f - 2 * bean.getRadius());
-            std::uniform_real_distribution<float> newY(80.f, 720.f - 2 * bean.getRadius());
+            std::uniform_real_distribution<float> newX(20.f, 1060.f - 2 * bean.getRadius());
+            std::uniform_real_distribution<float> newY(70.f, 760.f - 2 * bean.getRadius());
             bean.setPosition({ newX(rand_gen), newY(rand_gen) });
             bean_alive_time = 0;
             score++;
@@ -63,13 +70,24 @@ void Game::update()
         }
 
         if (current_level >= HAVE_GHOST) {
-            if (pacman.getGlobalBounds().findIntersection(ghost.getGlobalBounds())) {
+            if (pacman.getGlobalBounds().findIntersection(ghost.getGlobalBounds())
+                && !is_ghost_hurt) {
                 hurt.play();
                 pacman.setPosition({ window.getSize().x / 2.f, 360 });
                 hp--;
+                is_ghost_hurt = true;
+                hurt_time.restart();
+                pacman.setColor({ 255, 255, 255, 120 });
+
                 if (hp == 0)
                     cause_death = GHOST;
+            } else if (current_level >= HAVE_GHOST
+                && is_ghost_hurt
+                && hurt_time.getElapsedTime().asSeconds() >= 2) {
+                is_ghost_hurt = false;
+                pacman.setColor({ 255, 255, 255, 255 });
             }
+
             // 实现ghost匀速移动，比向量好上手多了
             if ((outEdge(ghost) == UP_OUT && ghost_incre.y < 0)
                 || (outEdge(ghost) == DN_OUT && ghost_incre.y > 0)) {
@@ -139,17 +157,17 @@ void Game::control(float delta_time, float speed)
 }
 
 template <typename type>
-Game::out Game::outEdge(const type& sprite)
+Game::Exceed Game::outEdge(const type& sprite)
 {
     sf::Vector2f pos_sprite = sprite.getPosition();
-    sf::Vector2f origin_dist = sprite.getGlobalBounds().size / 2.f;
-    if (pos_sprite.x + origin_dist.x > window.getSize().x) {
+    sf::Vector2f origin_dist = sprite.getGlobalBounds().size / 2.f; // sprite的边界到中心点的距离
+    if (pos_sprite.x + origin_dist.x > window.getSize().x - 20) {
         return RT_OUT;
-    } else if (pos_sprite.x - origin_dist.x < 0) {
+    } else if (pos_sprite.x - origin_dist.x < 20) {
         return LT_OUT;
-    } else if (pos_sprite.y + origin_dist.y > window.getSize().y) {
+    } else if (pos_sprite.y + origin_dist.y > window.getSize().y - 20) {
         return DN_OUT;
-    } else if (pos_sprite.y - origin_dist.y < 0) {
+    } else if (pos_sprite.y - origin_dist.y < 70) {
         return UP_OUT;
     } else
         return NOOUT;

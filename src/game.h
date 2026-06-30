@@ -8,16 +8,16 @@
 
 class Game {
 private:
-    enum out { NOOUT = 0,
+    enum Exceed { NOOUT = 0,
         UP_OUT,
         DN_OUT,
         LT_OUT,
         RT_OUT };
-    enum death { ALIVE = 0,
+    enum Death { ALIVE = 0,
         GHOST,
         EDGE,
         HUNGER };
-    enum level { WAIT = 0,
+    enum Level { WAIT = 0,
         NORMAL,
         HAVE_GHOST,
         GHOST_ACC };
@@ -25,12 +25,13 @@ private:
     bool is_menu = true;
     bool init_menu = false;
     bool init_game = false;
+    bool is_ghost_hurt = false;
     bool is_over = false;
     bool init_over = false;
     int score = 0;
     int hp = 5;
-    death cause_death = ALIVE;
-    level current_level = WAIT;
+    Death cause_death = ALIVE;
+    Level current_level = WAIT;
 
 private:
     std::random_device seed;
@@ -38,7 +39,9 @@ private:
 
     sf::RenderWindow window;
     sf::Clock clock;
+    sf::Clock hurt_time;
     sf::Texture init_menu_back;
+    sf::Texture init_game_back;
     sf::Texture eater;
     sf::Texture tex_ghost;
     sf::Music bgm;
@@ -56,6 +59,7 @@ private:
     sf::CircleShape bean;
     sf::Sprite ghost;
     sf::RectangleShape menu_back;
+    sf::RectangleShape game_back;
     sf::RectangleShape table;
 
     sf::Font simsun;
@@ -82,7 +86,7 @@ private:
     void control(float delta_time, float speed = 300.f);
 
     template <typename type>
-    out outEdge(const type& sprite);
+    Exceed outEdge(const type& sprite);
 
     void render();
 
