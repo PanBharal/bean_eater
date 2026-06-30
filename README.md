@@ -43,8 +43,7 @@ cpack
 ## 🙏 致谢
 
 - 字体：郑庆科南北词宫谱宋体
-- 音乐：rifle 个人剪裁版 
-  好友 ZhangLunch 自制 I eat so I'm here
+- 音乐：好友 ZhangLunch 自制 I eat so I'm here 和 Bean's demised
 - 音效：我的世界早期史蒂夫受击音效、植物大战僵尸失败音效、不知名网友提供音效
 
 - 特别感谢鼓励我、支持我，为我提建议的 TangBoat、ZhangLunch。他们的支持是我维护项目的最大动力
